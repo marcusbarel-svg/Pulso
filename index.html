@@ -309,7 +309,8 @@ Produce la lectura de PULSO. SOLO JSON válido — sin markdown, sin texto antes
     body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1300,messages:[{role:"user",content:prompt}]})
   });
   const data=await res.json();
-  const text=data.content.map(b=>b.text||"").join("");
+if(!data || !data.content) throw new Error('Sin respuesta');
+const text=data.content.map(b=>b.text||"").join("");
   return JSON.parse(text.replace(/```json|```/g,"").trim());
 }
 
