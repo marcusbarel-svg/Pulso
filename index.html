@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -12,30 +11,29 @@ body { background: #f5f0e8; color: #1a1610; font-family: 'DM Sans', sans-serif; 
 .screen { display: none; flex-direction: column; min-height: 100vh; padding: 2.5rem 2rem 2rem; }
 .screen.active { display: flex; }
 .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 3rem; }
-.logo { font-size: 11px; letter-spacing: 0.35em; text-transform: uppercase; color: #a89e91; }
-.phase { font-size: 11px; letter-spacing: 0.2em; color: #5a5550; text-transform: uppercase; }
+.logo { font-size: 11px; letter-spacing: 0.35em; text-transform: uppercase; color: #8b7355; }
+.phase { font-size: 11px; letter-spacing: 0.2em; color: #b4a898; text-transform: uppercase; }
 .content { flex: 1; display: flex; flex-direction: column; justify-content: center; max-width: 520px; }
-.title { font-family: 'Cormorant Garamond', serif; font-size: 42px; font-weight: 300; line-height: 1.1; margin-bottom: 1.5rem; }
-.subtitle { font-size: 14px; line-height: 1.8; color: #6b5e4f; margin-bottom: 2.5rem; }
-.btn { background: transparent; border: 0.5px solid #3d3a36; color: #a89e91; font-family: 'DM Sans', sans-serif; font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; padding: 10px 24px; cursor: pointer; transition: all 0.25s; align-self: flex-start; }
-.btn:hover { border-color: #6b5e4f; color:  #1a1610; }
+.title { font-family: 'Cormorant Garamond', serif; font-size: 42px; font-weight: 300; line-height: 1.1; margin-bottom: 1.5rem; color: #1a1610; }
+.subtitle { font-size: 14px; line-height: 1.8; color: #8b7355; margin-bottom: 2.5rem; }
+.btn { background: transparent; border: 0.5px solid #c4b8a8; color: #8b7355; font-family: 'DM Sans', sans-serif; font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; padding: 10px 24px; cursor: pointer; transition: all 0.25s; align-self: flex-start; }
+.btn:hover { border-color: #8b7355; color: #1a1610; }
 .btn:disabled { opacity: 0.3; cursor: not-allowed; }
 .messages { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 2rem; padding-bottom: 1rem; }
 .msg { max-width: 460px; }
 .msg.pulso .msg-text { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 300; line-height: 1.6; color: #1a1610; }
-.msg.user .msg-text { font-size: 14px; line-height: 1.7; color: #6b5e4f; padding-left: 1rem; border-left: 0.5px solid #c4b8a8; }
+.msg.user .msg-text { font-size: 14px; line-height: 1.7; color: #8b7355; padding-left: 1rem; border-left: 0.5px solid #c4b8a8; }
 .input-area { display: flex; flex-direction: column; gap: 0.75rem; }
-.input-area textarea { background: transparent; border: none; border-bottom: 0.5px solid #2e2b27; color: #1a1610; font-family: 'DM Sans', sans-serif; font-weight: 300; font-size: 15px; line-height: 1.7; padding: 0 0 1rem 0; resize: none; outline: none; width: 100%; min-height: 60px; caret-color: #c4b8a8; transition: border-color 0.3s; }
-.input-area textarea::placeholder { color: #3d3a36; }
-.input-area textarea:focus { border-bottom-color: #6b5e4f; }
+.input-area textarea { background: transparent; border: none; border-bottom: 0.5px solid #c4b8a8; color: #1a1610; font-family: 'DM Sans', sans-serif; font-weight: 300; font-size: 15px; line-height: 1.7; padding: 0 0 1rem 0; resize: none; outline: none; width: 100%; min-height: 60px; caret-color: #8b7355; transition: border-color 0.3s; }
+.input-area textarea::placeholder { color: #c4b8a8; }
+.input-area textarea:focus { border-bottom-color: #8b7355; }
 .input-row { display: flex; justify-content: flex-end; align-items: center; gap: 1rem; }
-.char-hint { font-size: 11px; color: #3d3a36; }
+.char-hint { font-size: 11px; color: #c4b8a8; }
 .pulse-container { display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; gap: 2rem; }
-.pulse { width: 48px; height: 48px; border-radius: 50%; border: 0.5px solid #3d3a36; position: relative; animation: breathe 2.5s ease-in-out infinite; }
-.pulse::before { content: ''; position: absolute; inset: 8px; border-radius: 50%; border: 0.5px solid #5a5550; animation: breathe 2.5s ease-in-out infinite reverse; }
-.pulse::after { content: ''; position: absolute; inset: 18px; border-radius: 50%; background: #3d3a36; animation: breathe 2.5s ease-in-out infinite; }
+.pulse { width: 48px; height: 48px; border-radius: 50%; border: 0.5px solid #c4b8a8; position: relative; animation: breathe 2.5s ease-in-out infinite; }
+.pulse::before { content: ''; position: absolute; inset: 8px; border-radius: 50%; border: 0.5px solid #b4a898; animation: breathe 2.5s ease-in-out infinite reverse; }
+.pulse::after { content: ''; position: absolute; inset: 18px; border-radius: 50%; background: #c4b8a8; animation: breathe 2.5s ease-in-out infinite; }
 @keyframes breathe { 0%,100%{transform:scale(1);opacity:.6} 50%{transform:scale(1.12);opacity:1} }
-.pulse-text { font-size: 11px; letter-spacing: 0.3em; color: #5a5550; text-transform: uppercase; }
 .error { font-size: 12px; color: #8a4a3a; margin-top: 0.5rem; }
 </style>
 </head>
@@ -60,6 +58,7 @@ body { background: #f5f0e8; color: #1a1610; font-family: 'DM Sans', sans-serif; 
     <textarea id="user-input" placeholder="Escribe aquí..." rows="2" onkeydown="handleKey(event)"></textarea>
     <div class="input-row">
       <span class="char-hint" id="char-hint"></span>
+      <button class="btn" onclick="exportChat()">Guardar</button>
       <button class="btn" id="send-btn" onclick="sendMessage()">Enviar</button>
     </div>
     <div class="error" id="error-msg"></div>
@@ -70,7 +69,7 @@ body { background: #f5f0e8; color: #1a1610; font-family: 'DM Sans', sans-serif; 
   <div class="header"><span class="logo">Pulso</span></div>
   <div class="pulse-container">
     <div class="pulse"></div>
-    <span class="pulse-text">Leyendo</span>
+    <span class="phase">Leyendo</span>
   </div>
 </div>
 
@@ -123,9 +122,9 @@ async function startSession() {
     const res = await fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ 
-        messages: [{ role: 'user', content: 'inicio' }], 
-        memory: memory 
+      body: JSON.stringify({
+        messages: [{ role: 'user', content: 'inicio' }],
+        memory: memory
       })
     });
     const data = await res.json();
@@ -162,7 +161,7 @@ async function sendMessage() {
     show('chat');
     addMessage('pulso', reply);
     document.getElementById('send-btn').disabled = false;
-    saveMemoryIfNeeded(text, reply);
+    saveMemoryIfNeeded();
   } catch(e) {
     show('chat');
     document.getElementById('error-msg').textContent = 'Error de conexión. Intenta de nuevo.';
@@ -170,7 +169,7 @@ async function sendMessage() {
   }
 }
 
-function saveMemoryIfNeeded(userText, pulsoReply) {
+function saveMemoryIfNeeded() {
   if (messages.length >= 6) {
     const frases = messages
       .filter(m => m.role === 'user')
@@ -188,6 +187,20 @@ function saveMemoryIfNeeded(userText, pulsoReply) {
       })
     }).catch(() => {});
   }
+}
+
+function exportChat() {
+  if (messages.length === 0) return;
+  const lines = messages.map(m => {
+    const role = m.role === 'assistant' ? 'PULSO' : 'Yo';
+    return role + ':\n' + m.content + '\n';
+  }).join('\n');
+  const fecha = new Date().toLocaleDateString('es-ES');
+  const blob = new Blob(['PULSO — ' + fecha + '\n\n' + lines], { type: 'text/plain' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'pulso-' + fecha.replace(/\//g, '-') + '.txt';
+  a.click();
 }
 </script>
 </body>
