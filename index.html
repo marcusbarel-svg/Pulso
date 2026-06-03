@@ -1,1 +1,191 @@
 
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>PULSO</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet"/>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #0c0b0a; color: #e8e2d9; font-family: 'DM Sans', sans-serif; font-weight: 300; min-height: 100vh; }
+.screen { display: none; flex-direction: column; min-height: 100vh; padding: 2.5rem 2rem 2rem; }
+.screen.active { display: flex; }
+.header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 3rem; }
+.logo { font-size: 11px; letter-spacing: 0.35em; text-transform: uppercase; color: #a89e91; }
+.phase { font-size: 11px; letter-spacing: 0.2em; color: #5a5550; text-transform: uppercase; }
+.content { flex: 1; display: flex; flex-direction: column; justify-content: center; max-width: 520px; }
+.title { font-family: 'Cormorant Garamond', serif; font-size: 42px; font-weight: 300; line-height: 1.1; margin-bottom: 1.5rem; }
+.subtitle { font-size: 14px; line-height: 1.8; color: #6b5e4f; margin-bottom: 2.5rem; }
+.btn { background: transparent; border: 0.5px solid #3d3a36; color: #a89e91; font-family: 'DM Sans', sans-serif; font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; padding: 10px 24px; cursor: pointer; transition: all 0.25s; align-self: flex-start; }
+.btn:hover { border-color: #6b5e4f; color: #e8e2d9; }
+.btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.messages { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 2rem; padding-bottom: 1rem; }
+.msg { max-width: 460px; }
+.msg.pulso .msg-text { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 300; line-height: 1.6; color: #e8e2d9; }
+.msg.user .msg-text { font-size: 14px; line-height: 1.7; color: #6b5e4f; padding-left: 1rem; border-left: 0.5px solid #2e2b27; }
+.input-area { display: flex; flex-direction: column; gap: 0.75rem; }
+.input-area textarea { background: transparent; border: none; border-bottom: 0.5px solid #2e2b27; color: #e8e2d9; font-family: 'DM Sans', sans-serif; font-weight: 300; font-size: 15px; line-height: 1.7; padding: 0 0 1rem 0; resize: none; outline: none; width: 100%; min-height: 60px; caret-color: #c4b8a8; transition: border-color 0.3s; }
+.input-area textarea::placeholder { color: #3d3a36; }
+.input-area textarea:focus { border-bottom-color: #6b5e4f; }
+.input-row { display: flex; justify-content: flex-end; align-items: center; gap: 1rem; }
+.char-hint { font-size: 11px; color: #3d3a36; }
+.pulse-container { display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; gap: 2rem; }
+.pulse { width: 48px; height: 48px; border-radius: 50%; border: 0.5px solid #3d3a36; position: relative; animation: breathe 2.5s ease-in-out infinite; }
+.pulse::before { content: ''; position: absolute; inset: 8px; border-radius: 50%; border: 0.5px solid #5a5550; animation: breathe 2.5s ease-in-out infinite reverse; }
+.pulse::after { content: ''; position: absolute; inset: 18px; border-radius: 50%; background: #3d3a36; animation: breathe 2.5s ease-in-out infinite; }
+@keyframes breathe { 0%,100%{transform:scale(1);opacity:.6} 50%{transform:scale(1.12);opacity:1} }
+.pulse-text { font-size: 11px; letter-spacing: 0.3em; color: #5a5550; text-transform: uppercase; }
+.error { font-size: 12px; color: #8a4a3a; margin-top: 0.5rem; }
+</style>
+</head>
+<body>
+
+<div id="intro" class="screen active">
+  <div class="header"><span class="logo">Pulso</span></div>
+  <div class="content">
+    <h1 class="title">Hay algo<br/>que te trajo aquí.</h1>
+    <p class="subtitle">Escribe lo que surge. Sin filtros. Sin estructura.<br/>PULSO hace el resto.</p>
+    <button class="btn" onclick="startSession()">Comenzar</button>
+  </div>
+</div>
+
+<div id="chat" class="screen">
+  <div class="header">
+    <span class="logo">Pulso</span>
+    <span class="phase" id="phase-label"></span>
+  </div>
+  <div class="messages" id="messages"></div>
+  <div class="input-area">
+    <textarea id="user-input" placeholder="Escribe aquí..." rows="2" onkeydown="handleKey(event)"></textarea>
+    <div class="input-row">
+      <span class="char-hint" id="char-hint"></span>
+      <button class="btn" id="send-btn" onclick="sendMessage()">Enviar</button>
+    </div>
+    <div class="error" id="error-msg"></div>
+  </div>
+</div>
+
+<div id="loading" class="screen">
+  <div class="header"><span class="logo">Pulso</span></div>
+  <div class="pulse-container">
+    <div class="pulse"></div>
+    <span class="pulse-text">Leyendo</span>
+  </div>
+</div>
+
+<script>
+let messages = [];
+let userId = localStorage.getItem('pulso_user_id') || generateId();
+localStorage.setItem('pulso_user_id', userId);
+let memory = null;
+
+function generateId() {
+  return 'u_' + Math.random().toString(36).substr(2, 9);
+}
+
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function addMessage(role, text) {
+  messages.push({ role: role === 'pulso' ? 'assistant' : 'user', content: text });
+  const container = document.getElementById('messages');
+  const div = document.createElement('div');
+  div.className = 'msg ' + role;
+  div.innerHTML = '<p class="msg-text">' + text.replace(/\n/g, '<br/>') + '</p>';
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+}
+
+function handleKey(e) {
+  const input = document.getElementById('user-input');
+  const len = input.value.length;
+  document.getElementById('char-hint').textContent = len > 0 ? len + ' caracteres' : '';
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+}
+
+async function startSession() {
+  show('loading');
+  try {
+    const memRes = await fetch('/api/memory?user_id=' + userId);
+    const memData = await memRes.json();
+    if (memData.memory) {
+      memory = `Razón inicial: ${memData.memory.razon_inicial || ''}. Frases clave: ${(memData.memory.frases_clave || []).join(', ')}. Sin resolver: ${(memData.memory.sin_resolver || []).join(', ')}.`;
+    }
+  } catch(e) {}
+
+  try {
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: [], memory: memory })
+    });
+    const data = await res.json();
+    const text = data.content.map(b => b.text || '').join('');
+    show('chat');
+    addMessage('pulso', text);
+  } catch(e) {
+    show('intro');
+    document.getElementById('error-msg').textContent = 'Error de conexión. Intenta de nuevo.';
+  }
+}
+
+async function sendMessage() {
+  const input = document.getElementById('user-input');
+  const text = input.value.trim();
+  if (!text) return;
+
+  input.value = '';
+  document.getElementById('char-hint').textContent = '';
+  document.getElementById('error-msg').textContent = '';
+  document.getElementById('send-btn').disabled = true;
+
+  addMessage('user', text);
+  show('loading');
+
+  try {
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: messages, memory: memory })
+    });
+    const data = await res.json();
+    const reply = data.content.map(b => b.text || '').join('');
+    show('chat');
+    addMessage('pulso', reply);
+    document.getElementById('send-btn').disabled = false;
+    saveMemoryIfNeeded(text, reply);
+  } catch(e) {
+    show('chat');
+    document.getElementById('error-msg').textContent = 'Error de conexión. Intenta de nuevo.';
+    document.getElementById('send-btn').disabled = false;
+  }
+}
+
+function saveMemoryIfNeeded(userText, pulsoReply) {
+  if (messages.length >= 6) {
+    const frases = messages
+      .filter(m => m.role === 'user')
+      .slice(-3)
+      .map(m => m.content.substring(0, 100));
+
+    fetch('/api/memory', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        user_id: userId,
+        razon_inicial: messages[1]?.content?.substring(0, 200) || '',
+        frases_clave: frases,
+        sin_resolver: []
+      })
+    }).catch(() => {});
+  }
+}
+</script>
+</body>
+</html>
