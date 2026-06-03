@@ -115,7 +115,7 @@ async function startSession() {
     const memRes = await fetch('/api/memory?user_id=' + userId);
     const memData = await memRes.json();
     if (memData.memory) {
-      memory = `Razón inicial: ${memData.memory.razon_inicial || ''}. Frases clave: ${(memData.memory.frases_clave || []).join(', ')}. Sin resolver: ${(memData.memory.sin_resolver || []).join(', ')}.`;
+      memory = `Razón inicial: ${memData.memory.razon_inicial || ''}. Frases clave: ${(memData.memory.frases_clave || []).join(', ')}.`;
     }
   } catch(e) {}
 
@@ -123,7 +123,10 @@ async function startSession() {
     const res = await fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ messages: [], memory: memory })
+      body: JSON.stringify({ 
+        messages: [{ role: 'user', content: 'inicio' }], 
+        memory: memory 
+      })
     });
     const data = await res.json();
     const text = data.content.map(b => b.text || '').join('');
