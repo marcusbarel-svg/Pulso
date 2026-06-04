@@ -30,28 +30,33 @@ export default async function handler(req, res) {
       return res.status(200).json({ memory });
     }
 
-    if (req.method === 'POST') {
-      const body = req.body;
-      const url = SUPABASE_URL + '/rest/v1/memory';
-      console.log('POST URL:', url);
-      console.log('POST body:', JSON.stringify(body));
-      
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'apikey': SUPABASE_KEY,
-          'Authorization': 'Bearer ' + SUPABASE_KEY,
-          'Prefer': 'resolution=merge-duplicates'
-        },
-        body: JSON.stringify(body)
-      });
-      
-      console.log('POST status:', response.status);
-      const text = await response.text();
-      console.log('POST body:', text);
-      
-      return res.status(200).json({ ok: true });
+  if (req.method === 'POST') {
+  const { user_id, razon_inicial, frases_clave, sin_resolver } = req.body;
+  if (!user_id) return res.status(200).json({ ok: true });
+
+  const response = await fetch(SUPABASE_URL + '/rest/v1/memory', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': SUPABASE_KEY,
+      'Authorization': 'Bearer ' + SUPABASE_KEY,
+      'Prefer': 'resolution=merge-duplicates'
+    },
+    body: JSON.stringify({
+      user_id,
+      razon_inicial,
+      frases_clave: Array.isArray(frases_clave) ? frases_clave : [],
+      sin_resolver: Array.isArray(sin_resolver) ? sin_resolver : [],
+      updated_at: new Date().toISOString()
+    })
+  });
+
+  console.log('POST status:', response.status);
+  const text = await response.text();
+  console.log('POST response:', text);
+
+  return res.status(200).json({ ok: true });
+}
     }
 
     return res.status(200).json({ memory: null });
