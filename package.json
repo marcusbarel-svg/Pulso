@@ -1,7 +1,7 @@
 {
-  "name": "pulso",
+  "name": "pulso-api",
   "version": "1.0.0",
   "dependencies": {
-    "@supabase/supabase-js": "^2.39.0"
+    "@supabase/supabase-js": "^2.26.0"
   }
 }
