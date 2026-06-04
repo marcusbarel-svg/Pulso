@@ -29,22 +29,48 @@ export default async function handler(req, res) {
       const { user_id, razon_inicial, frases_clave, sin_resolver } = req.body;
       if (!user_id) return res.status(200).json({ ok: true });
 
-      await fetch(SUPABASE_URL + '/rest/v1/memory', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'apikey': SUPABASE_KEY,
-          'Authorization': 'Bearer ' + SUPABASE_KEY,
-          'Prefer': 'resolution=merge-duplicates'
-        },
-        body: JSON.stringify({
-          user_id,
-          razon_inicial,
-          frases_clave: Array.isArray(frases_clave) ? frases_clave : [],
-          sin_resolver: Array.isArray(sin_resolver) ? sin_resolver : [],
-          updated_at: new Date().toISOString()
-        })
-      });
+      const payload = {
+        user_id,
+        razon_inicial,
+        frases_clave: Array.isArray(frases_clave) ? frases_clave : [],
+        sin_resolver: Array.isArray(sin_resolver) ? sin_resolver : [],
+        updated_at: new Date().toISOString()
+      };
+
+      // Try PATCH first (update existing)
+      const patch = await fetch(
+        SUPABASE_URL + '/rest/v1/memory?user_id=eq.' + user_id,
+        {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': SUPABASE_KEY,
+            'Authorization': 'Bearer ' + SUPABASE_KEY
+          },
+          body: JSON.stringify({
+            razon_inicial,
+            frases_clave: Array.isArray(frases_clave) ? frases_clave : [],
+            sin_resolver: Array.isArray(sin_resolver) ? sin_resolver : [],
+            updated_at: new Date().toISOString()
+          })
+        }
+      );
+
+      // If no rows updated, do INSERT
+      const patchText = await patch.text();
+      const patchData = patchText ? JSON.parse(patchText) : [];
+      
+      if (!patchData || patchData.length === 0) {
+        await fetch(SUPABASE_URL + '/rest/v1/memory', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': SUPABASE_KEY,
+            'Authorization': 'Bearer ' + SUPABASE_KEY
+          },
+          body: JSON.stringify(payload)
+        });
+      }
 
       return res.status(200).json({ ok: true });
     }
