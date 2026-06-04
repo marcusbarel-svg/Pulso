@@ -3,9 +3,10 @@ import { createClient } from '@supabase/supabase-js';
 export default async function handler(req, res) {
   try {
     const supabase = createClient(
-      process.env.SUPABASE_URL,
-      process.env.SUPABASE_SECRET_KEY
-    );
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SECRET_KEY,
+  { global: { fetch: fetch } }
+);
 
     if (req.method === 'GET') {
       const { user_id } = req.query;
