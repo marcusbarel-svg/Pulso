@@ -49,7 +49,7 @@ export default async function handler(req, res) {
       sin_resolver: Array.isArray(sin_resolver) ? sin_resolver : [],
       updated_at: new Date().toISOString()
     })
-  });
+  
 
   console.log('POST status:', response.status);
   const text = await response.text();
