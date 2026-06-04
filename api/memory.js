@@ -19,14 +19,14 @@ async function supabaseQuery(method, body, params) {
 }
 
 export default async function handler(req, res) {
-  try {
+  try { res.setHeader('Cache-Control', 'no-store');
     if (req.method === 'GET') {
       const { user_id } = req.query;
       if (!user_id) return res.status(200).json({ memory: null });
 
       const data = await supabaseQuery('GET', null, 'user_id=eq.' + user_id + '&limit=1');
       const memory = data && data.length > 0 ? data[0] : null;
-      return res.status(200).json({ memory });
+      return res.status(200).json({ memory });res.setHeader('Cache-Control', 'no-store');
     }
 
     if (req.method === 'POST') {
