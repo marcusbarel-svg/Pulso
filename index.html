@@ -118,7 +118,12 @@ async function startSession() {
     const memRes = await fetch('/api/memory?user_id=' + userId);
     const memData = await memRes.json();
     if (memData.memory) {
-      memory = `Razón inicial: ${memData.memory.razon_inicial || ''}. Frases clave: ${(memData.memory.frases_clave || []).join(', ')}.`;
+      const m = memData.memory;
+      memory = `
+Razón inicial: ${m.razon_inicial || ''}
+Lo que el usuario expresó: ${(m.frases_clave || []).join(' | ')}
+Lo que PULSO observó: ${(m.sin_resolver || []).join(' | ')}
+      `.trim();
     }
   } catch(e) {}
 
