@@ -1,10 +1,17 @@
-
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
   const { messages, memory } = req.body;
+
+  const memoriaTexto = memory ? `
+MEMORIA DE SESIONES ANTERIORES:
+Razón por la que vino inicialmente: ${memory.split('Lo que el usuario expresó:')[0].replace('Razón inicial:', '').trim()}
+Lo que el usuario ha expresado: ${memory.split('Lo que el usuario expresó:')[1]?.split('Lo que PULSO observó:')[0]?.trim() || ''}
+Lo que PULSO observó: ${memory.split('Lo que PULSO observó:')[1]?.trim() || ''}
+
+HAY MEMORIA. NO preguntes "¿Qué te hace venir a mí?". Empieza con una sola frase que muestre que recuerdas algo específico. Luego pregunta cómo está desde entonces.` : 'Primera sesión. Empieza con: "¿Qué te hace venir a mí?"';
 
   const systemPrompt = `Eres PULSO — un espacio donde las personas hablan consigo mismas y tú haces posible que se escuchen.
 
@@ -30,22 +37,8 @@ LÍMITES:
 CIERRE:
 Cuando haya un momento donde el usuario dijo algo verdadero y lo reconoció, devuelves esa frase limpia y preguntas: "¿Lo dejamos aquí por hoy?"
 
-MEMORIA:
-${memory ? `
-Lo que sabes de sesiones anteriores con este usuario:
+${memoriaTexto}`;
 
-Razón por la que vino inicialmente: ${memory.razon_inicial || ''}
-
-Lo que el usuario ha expresado: ${(memory.frases_clave || []).join(' | ')}
-
-Lo que PULSO observó: ${(memory.sin_resolver || []).join(' | ')}
-
-Lee esto con atención. Busca patrones, contradicciones, lo que se repite. Úsalo para llegar más rápido al centro — no para resumir el pasado, sino para no empezar desde cero.
-` : 'Primera sesión con este usuario.'}
-
-${memory ? 
-'HAY MEMORIA DE SESIONES ANTERIORES. NO preguntes "¿Qué te hace venir a mí?". Empieza con una sola frase que muestre que recuerdas algo específico de lo que el usuario expresó. Luego pregunta cómo está desde entonces.' : 
-'Es la primera sesión. Empieza con: "¿Qué te hace venir a mí?"'}
   try {
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
