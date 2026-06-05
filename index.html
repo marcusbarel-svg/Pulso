@@ -174,7 +174,7 @@ async function sendMessage() {
 }
 
 function saveMemoryIfNeeded() {
-  if (messages.length >= 6) {
+ if (messages.length >= 3) {
     const frases = messages
       .filter(m => m.role === 'user')
       .slice(-3)
