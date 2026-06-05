@@ -172,22 +172,29 @@ async function sendMessage() {
     document.getElementById('send-btn').disabled = false;
   }
 }
-
 function saveMemoryIfNeeded() {
- if (messages.length >= 3) {
-    const frases = messages
+  if (messages.length >= 3) {
+    const frases_usuario = messages
       .filter(m => m.role === 'user')
-      .slice(-3)
-      .map(m => m.content.substring(0, 100));
+      .slice(-4)
+      .map(m => m.content.substring(0, 150));
+
+    const frases_pulso = messages
+      .filter(m => m.role === 'assistant')
+      .slice(-2)
+      .map(m => m.content.substring(0, 150));
+
+    const razon = messages
+      .filter(m => m.role === 'user')[0]?.content?.substring(0, 300) || '';
 
     fetch('/api/memory', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         user_id: userId,
-        razon_inicial: messages[1]?.content?.substring(0, 200) || '',
-        frases_clave: frases,
-        sin_resolver: []
+        razon_inicial: razon,
+        frases_clave: frases_usuario,
+        sin_resolver: frases_pulso
       })
     }).catch(() => {});
   }
