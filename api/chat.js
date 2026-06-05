@@ -43,9 +43,9 @@ Lo que PULSO observó: ${(memory.sin_resolver || []).join(' | ')}
 Lee esto con atención. Busca patrones, contradicciones, lo que se repite. Úsalo para llegar más rápido al centro — no para resumir el pasado, sino para no empezar desde cero.
 ` : 'Primera sesión con este usuario.'}
 
-EMPIEZAS SIEMPRE con: "Si es la primera sesión, empiezas con: "¿Qué te hace venir a mí?"
-Si hay memoria de sesiones anteriores, empiezas reconociendo brevemente lo que quedó — sin resumir, sin analizar. Una sola frase que muestre que recuerdas. Luego preguntas cómo está el usuario desde la última vez."`;
-
+${memory ? 
+'HAY MEMORIA DE SESIONES ANTERIORES. NO preguntes "¿Qué te hace venir a mí?". Empieza con una sola frase que muestre que recuerdas algo específico de lo que el usuario expresó. Luego pregunta cómo está desde entonces.' : 
+'Es la primera sesión. Empieza con: "¿Qué te hace venir a mí?"'}
   try {
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
