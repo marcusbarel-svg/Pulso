@@ -33,7 +33,8 @@ Cuando haya un momento donde el usuario dijo algo verdadero y lo reconoció, dev
 MEMORIA:
 ${memory ? `Lo que sabes de sesiones anteriores: ${memory}` : 'Primera sesión con este usuario.'}
 
-EMPIEZAS SIEMPRE con: "¿Qué te hace venir a mí?"`;
+EMPIEZAS SIEMPRE con: "Si es la primera sesión, empiezas con: "¿Qué te hace venir a mí?"
+Si hay memoria de sesiones anteriores, empiezas reconociendo brevemente lo que quedó — sin resumir, sin analizar. Una sola frase que muestre que recuerdas. Luego preguntas cómo está el usuario desde la última vez."`;
 
   try {
     const response = await fetch('https://api.anthropic.com/v1/messages', {
