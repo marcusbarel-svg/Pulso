@@ -71,7 +71,7 @@ body.rtl .msg.user .msg-text { padding-left: 0; padding-right: 1rem; border-left
 <div id="intro" class="screen">
   <div class="header">
     <span class="logo">Pulso</span>
-    <button onclick="show('lang-screen')" style="background:transparent;border:none;color:#b4a898;font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:0.2em;cursor:pointer;text-transform:uppercase;"id="lang-btn-text">Idioma</button>
+    <button onclick="show('lang-screen')" style="background:transparent;border:none;color:#b4a898;font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:0.2em;cursor:pointer;text-transform:uppercase;"id="lang-btn-text"id="lang-btn-intro">Idioma</button>
   </div>
   <div class="content">
     <h1 class="title" id="intro-title"></h1>
@@ -85,7 +85,7 @@ body.rtl .msg.user .msg-text { padding-left: 0; padding-right: 1rem; border-left
     <span class="logo">Pulso</span>
     <div style="display:flex;align-items:center;gap:1rem;">
       <span class="phase" id="phase-label"></span>
-      <button onclick="show('lang-screen')" style="background:transparent;border:none;color:#b4a898;font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:0.2em;cursor:pointer;text-transform:uppercase;">Idioma</button>
+      <button onclick="show('lang-screen')" style="background:transparent;border:none;color:#b4a898;font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:0.2em;cursor:pointer;text-transform:uppercase;"id="lang-btn-intro">Idioma</button>
     </div>
   </div>
   <div class="messages" id="messages"></div>
@@ -194,6 +194,8 @@ function selectLang(l) {
   document.getElementById('send-btn').textContent = t.send;
   document.getElementById('export-btn').textContent = t.save;
   document.getElementById('loading-text').textContent = t.loading;
+  document.getElementById('lang-btn-intro').textContent = l === 'es' ? 'Idioma' : l === 'en' ? 'Language' : l === 'fr' ? 'Langue' : 'Idioma';
+document.getElementById('lang-btn-chat').textContent = l === 'es' ? 'Idioma' : l === 'en' ? 'Language' : l === 'fr' ? 'Langue' : 'Idioma';
 
   show('intro');
 }
