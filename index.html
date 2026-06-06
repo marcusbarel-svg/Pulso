@@ -8,12 +8,13 @@
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { background: #f5f0e8; color: #1a1610; font-family: 'DM Sans', sans-serif; font-weight: 300; min-height: 100vh; }
-body.rtl { direction: rtl; }
 .screen { display: none; flex-direction: column; min-height: 100vh; padding: 2.5rem 2rem 2rem; }
 .screen.active { display: flex; }
-.header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 3rem; }s
+.header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 3rem; }
 .logo { font-size: 11px; letter-spacing: 0.35em; text-transform: uppercase; color: #8b7355; }
 .phase { font-size: 11px; letter-spacing: 0.2em; color: #b4a898; text-transform: uppercase; }
+.lang-switch { background: transparent; border: none; color: #b4a898; font-family: 'DM Sans', sans-serif; font-size: 11px; letter-spacing: 0.2em; cursor: pointer; text-transform: uppercase; }
+.lang-switch:hover { color: #8b7355; }
 .content { flex: 1; display: flex; flex-direction: column; justify-content: center; max-width: 520px; }
 .title { font-family: 'Cormorant Garamond', serif; font-size: 42px; font-weight: 300; line-height: 1.1; margin-bottom: 1.5rem; color: #1a1610; }
 .subtitle { font-size: 14px; line-height: 1.8; color: #8b7355; margin-bottom: 2.5rem; }
@@ -24,12 +25,11 @@ body.rtl { direction: rtl; }
 .lang-btn { background: transparent; border: 0.5px solid #c4b8a8; color: #8b7355; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 300; padding: 14px 20px; cursor: pointer; transition: all 0.25s; text-align: left; }
 .lang-btn:hover { border-color: #8b7355; color: #1a1610; background: rgba(139,115,85,0.05); }
 .lang-btn .lang-name { display: block; font-size: 15px; margin-bottom: 2px; }
-.lang-btn .lang-native { display: block; font-size: 11px; opacity: 0.5; letter-spacing: 0.05em; }
+.lang-btn .lang-sub { display: block; font-size: 11px; opacity: 0.5; }
 .messages { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 2rem; padding-bottom: 1rem; }
 .msg { max-width: 460px; }
 .msg.pulso .msg-text { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 300; line-height: 1.6; color: #1a1610; }
 .msg.user .msg-text { font-size: 14px; line-height: 1.7; color: #8b7355; padding-left: 1rem; border-left: 0.5px solid #c4b8a8; }
-body.rtl .msg.user .msg-text { padding-left: 0; padding-right: 1rem; border-left: none; border-right: 0.5px solid #c4b8a8; }
 .input-area { display: flex; flex-direction: column; gap: 0.75rem; }
 .input-area textarea { background: transparent; border: none; border-bottom: 0.5px solid #c4b8a8; color: #1a1610; font-family: 'DM Sans', sans-serif; font-weight: 300; font-size: 15px; line-height: 1.7; padding: 0 0 1rem 0; resize: none; outline: none; width: 100%; min-height: 60px; caret-color: #8b7355; transition: border-color 0.3s; }
 .input-area textarea::placeholder { color: #c4b8a8; }
@@ -46,57 +46,60 @@ body.rtl .msg.user .msg-text { padding-left: 0; padding-right: 1rem; border-left
 </head>
 <body>
 
-<div id="lang-screen" class="screen active">
+<div id="screen-lang" class="screen active">
   <div class="header"><span class="logo">Pulso</span></div>
   <div class="content">
-    <h1 class="title" style="margin-bottom:2rem;">—</h1>
+    <h1 class="title" style="font-size:32px;margin-bottom:2rem;">—</h1>
     <div class="lang-grid">
       <button class="lang-btn" onclick="selectLang('es')">
         <span class="lang-name">Español</span>
-        <span class="lang-native">es</span>
+        <span class="lang-sub">es</span>
       </button>
       <button class="lang-btn" onclick="selectLang('en')">
         <span class="lang-name">English</span>
-        <span class="lang-native">en</span>
+        <span class="lang-sub">en</span>
       </button>
       <button class="lang-btn" onclick="selectLang('fr')">
         <span class="lang-name">Français</span>
-        <span class="lang-native">fr</span>
+        <span class="lang-sub">fr</span>
       </button>
-    
     </div>
   </div>
 </div>
 
-<div id="intro" class="screen">
+<div id="screen-intro" class="screen">
   <div class="header">
     <span class="logo">Pulso</span>
-    <button onclick="show('lang-screen')" style="background:transparent;border:none;color:#b4a898;font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:0.2em;cursor:pointer;text-transform:uppercase;" id="lang-btn-intro">Idioma</button>
+    <button class="lang-switch" onclick="show('screen-lang')" id="btn-lang-intro">Idioma</button>
+  </div>
+  <div class="content">
+    <h1 class="title" id="intro-title"></h1>
     <p class="subtitle" id="intro-subtitle"></p>
-    <button class="btn" id="start-btn" onclick="startSession()"></button>
+    <button class="btn" id="btn-start" onclick="startSession()"></button>
   </div>
 </div>
 
-<div id="chat" class="screen">
- <div class="header">
+<div id="screen-chat" class="screen">
+  <div class="header">
     <span class="logo">Pulso</span>
-    <div style="display:flex;align-items:center;gap:1rem;">
+    <div style="display:flex;align-items:center;gap:1.5rem;">
       <span class="phase" id="phase-label"></span>
-      <button onclick="show('lang-screen')" style="background:transparent;border:none;color:#b4a898;font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:0.2em;cursor:pointer;text-transform:uppercase;" id="lang-btn-intro">Idioma</button>
+      <button class="lang-switch" onclick="show('screen-lang')" id="btn-lang-chat">Idioma</button>
+    </div>
   </div>
   <div class="messages" id="messages"></div>
   <div class="input-area">
     <textarea id="user-input" rows="2" onkeydown="handleKey(event)"></textarea>
     <div class="input-row">
       <span class="char-hint" id="char-hint"></span>
-      <button class="btn" id="export-btn" onclick="exportChat()"></button>
-      <button class="btn" id="send-btn" onclick="sendMessage()"></button>
+      <button class="btn" id="btn-export" onclick="exportChat()"></button>
+      <button class="btn" id="btn-send" onclick="sendMessage()"></button>
     </div>
     <div class="error" id="error-msg"></div>
   </div>
 </div>
 
-<div id="loading" class="screen">
+<div id="screen-loading" class="screen">
   <div class="header"><span class="logo">Pulso</span></div>
   <div class="pulse-container">
     <div class="pulse"></div>
@@ -115,6 +118,7 @@ const TEXTS = {
     save: 'Guardar',
     loading: 'Leyendo',
     error: 'Error de conexión. Intenta de nuevo.',
+    langWord: 'Idioma',
     initMsg: 'inicio'
   },
   en: {
@@ -126,6 +130,7 @@ const TEXTS = {
     save: 'Save',
     loading: 'Reading',
     error: 'Connection error. Try again.',
+    langWord: 'Language',
     initMsg: 'start'
   },
   fr: {
@@ -137,18 +142,8 @@ const TEXTS = {
     save: 'Sauvegarder',
     loading: 'Lecture',
     error: 'Erreur de connexion. Réessayez.',
+    langWord: 'Langue',
     initMsg: 'début'
-  },
-  he: {
-    title: 'משהו\nהביא אותך לכאן.',
-    subtitle: 'כתוב מה שעולה. ללא מסננים. ללא מבנה.\nPULSO יעשה את השאר.',
-    start: 'התחל',
-    placeholder: 'כתוב כאן...',
-    send: 'שלח',
-    save: 'שמור',
-    loading: 'קורא',
-    error: 'שגיאת חיבור. נסה שוב.',
-    initMsg: 'התחלה'
   }
 };
 
@@ -174,26 +169,17 @@ function show(id) {
 function selectLang(l) {
   lang = l;
   const t = TEXTS[lang];
-
-  if (lang === 'he') {
-    document.body.classList.add('rtl');
-    document.documentElement.lang = 'he';
-  } else {
-    document.body.classList.remove('rtl');
-    document.documentElement.lang = lang;
-  }
-
+  document.documentElement.lang = lang;
   document.getElementById('intro-title').textContent = t.title;
   document.getElementById('intro-subtitle').textContent = t.subtitle;
-  document.getElementById('start-btn').textContent = t.start;
+  document.getElementById('btn-start').textContent = t.start;
   document.getElementById('user-input').placeholder = t.placeholder;
-  document.getElementById('send-btn').textContent = t.send;
-  document.getElementById('export-btn').textContent = t.save;
+  document.getElementById('btn-send').textContent = t.send;
+  document.getElementById('btn-export').textContent = t.save;
   document.getElementById('loading-text').textContent = t.loading;
-  document.getElementById('lang-btn-intro').textContent = l === 'es' ? 'Idioma' : l === 'en' ? 'Language' : l === 'fr' ? 'Langue' : 'Idioma';
-document.getElementById('lang-btn-chat').textContent = l === 'es' ? 'Idioma' : l === 'en' ? 'Language' : l === 'fr' ? 'Langue' : 'Idioma';
-
-  show('intro');
+  document.getElementById('btn-lang-intro').textContent = t.langWord;
+  document.getElementById('btn-lang-chat').textContent = t.langWord;
+  show('screen-intro');
 }
 
 function addMessage(role, text) {
@@ -217,17 +203,13 @@ function handleKey(e) {
 }
 
 async function startSession() {
-  show('loading');
+  show('screen-loading');
   try {
     const memRes = await fetch('/api/memory?user_id=' + userId);
     const memData = await memRes.json();
     if (memData.memory) {
       const m = memData.memory;
-      memory = `
-Razón inicial: ${m.razon_inicial || ''}
-Lo que el usuario expresó: ${(m.frases_clave || []).join(' | ')}
-Lo que PULSO observó: ${(m.sin_resolver || []).join(' | ')}
-      `.trim();
+      memory = `Razón inicial: ${m.razon_inicial || ''}\nLo que el usuario expresó: ${(m.frases_clave || []).join(' | ')}\nLo que PULSO observó: ${(m.sin_resolver || []).join(' | ')}`;
     }
   } catch(e) {}
 
@@ -243,10 +225,10 @@ Lo que PULSO observó: ${(m.sin_resolver || []).join(' | ')}
     });
     const data = await res.json();
     const text = data.content.map(b => b.text || '').join('');
-    show('chat');
+    show('screen-chat');
     addMessage('pulso', text);
   } catch(e) {
-    show('intro');
+    show('screen-intro');
     document.getElementById('error-msg').textContent = TEXTS[lang].error;
   }
 }
@@ -255,15 +237,12 @@ async function sendMessage() {
   const input = document.getElementById('user-input');
   const text = input.value.trim();
   if (!text) return;
-
   input.value = '';
   document.getElementById('char-hint').textContent = '';
   document.getElementById('error-msg').textContent = '';
-  document.getElementById('send-btn').disabled = true;
-
+  document.getElementById('btn-send').disabled = true;
   addMessage('user', text);
-  show('loading');
-
+  show('screen-loading');
   try {
     const res = await fetch('/api/chat', {
       method: 'POST',
@@ -272,51 +251,33 @@ async function sendMessage() {
     });
     const data = await res.json();
     const reply = data.content.map(b => b.text || '').join('');
-    show('chat');
+    show('screen-chat');
     addMessage('pulso', reply);
-    document.getElementById('send-btn').disabled = false;
+    document.getElementById('btn-send').disabled = false;
     saveMemoryIfNeeded();
   } catch(e) {
-    show('chat');
+    show('screen-chat');
     document.getElementById('error-msg').textContent = TEXTS[lang].error;
-    document.getElementById('send-btn').disabled = false;
+    document.getElementById('btn-send').disabled = false;
   }
 }
 
 function saveMemoryIfNeeded() {
   if (messages.length >= 3) {
-    const frases_usuario = messages
-      .filter(m => m.role === 'user')
-      .slice(-4)
-      .map(m => m.content.substring(0, 150));
-
-    const frases_pulso = messages
-      .filter(m => m.role === 'assistant')
-      .slice(-2)
-      .map(m => m.content.substring(0, 150));
-
-    const razon = messages
-      .filter(m => m.role === 'user')[0]?.content?.substring(0, 300) || '';
-
+    const frases_usuario = messages.filter(m => m.role === 'user').slice(-4).map(m => m.content.substring(0, 150));
+    const frases_pulso = messages.filter(m => m.role === 'assistant').slice(-2).map(m => m.content.substring(0, 150));
+    const razon = messages.filter(m => m.role === 'user')[0]?.content?.substring(0, 300) || '';
     fetch('/api/memory', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        user_id: userId,
-        razon_inicial: razon,
-        frases_clave: frases_usuario,
-        sin_resolver: frases_pulso
-      })
+      body: JSON.stringify({ user_id: userId, razon_inicial: razon, frases_clave: frases_usuario, sin_resolver: frases_pulso })
     }).catch(() => {});
   }
 }
 
 function exportChat() {
   if (messages.length === 0) return;
-  const lines = messages.map(m => {
-    const role = m.role === 'assistant' ? 'PULSO' : 'Yo';
-    return role + ':\n' + m.content + '\n';
-  }).join('\n');
+  const lines = messages.map(m => (m.role === 'assistant' ? 'PULSO' : 'Yo') + ':\n' + m.content + '\n').join('\n');
   const fecha = new Date().toLocaleDateString();
   const blob = new Blob(['PULSO — ' + fecha + '\n\n' + lines], { type: 'text/plain' });
   const a = document.createElement('a');
