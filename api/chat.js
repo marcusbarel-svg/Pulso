@@ -3,7 +3,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { messages, memory } = req.body;
+  const { messages, memory, lang } = req.body;
 
   const memoriaTexto = memory ? `
 MEMORIA DE SESIONES ANTERIORES:
