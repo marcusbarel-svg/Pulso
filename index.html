@@ -11,7 +11,7 @@ body { background: #f5f0e8; color: #1a1610; font-family: 'DM Sans', sans-serif; 
 .screen { display: none; flex-direction: column; min-height: 100vh; padding: 2.5rem 2rem 2rem; }
 .screen.active { display: flex; }
 .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 3rem; }
-.logo { font-size: 11px; letter-spacing: 0.35em; text-transform: uppercase; color: #8b7355; }
+.logo { font-size: 11px; letter-spacing: 0.35em; text-transform: uppercase; color: #8b7355; font-family: 'DM Sans', sans-serif; }
 .phase { font-size: 11px; letter-spacing: 0.2em; color: #b4a898; text-transform: uppercase; }
 .lang-switch { background: transparent; border: none; color: #b4a898; font-family: 'DM Sans', sans-serif; font-size: 11px; letter-spacing: 0.2em; cursor: pointer; text-transform: uppercase; }
 .lang-switch:hover { color: #8b7355; }
@@ -24,8 +24,8 @@ body { background: #f5f0e8; color: #1a1610; font-family: 'DM Sans', sans-serif; 
 .lang-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; max-width: 320px; margin-bottom: 2rem; }
 .lang-btn { background: transparent; border: 0.5px solid #c4b8a8; color: #8b7355; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 300; padding: 14px 20px; cursor: pointer; transition: all 0.25s; text-align: left; }
 .lang-btn:hover { border-color: #8b7355; color: #1a1610; background: rgba(139,115,85,0.05); }
-.lang-btn .lang-name { display: block; font-size: 15px; margin-bottom: 2px; }
-.lang-btn .lang-sub { display: block; font-size: 11px; opacity: 0.5; }
+.lang-name { display: block; font-size: 15px; margin-bottom: 2px; color: #1a1610; }
+.lang-sub { display: block; font-size: 11px; color: #b4a898; }
 .messages { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 2rem; padding-bottom: 1rem; }
 .msg { max-width: 460px; }
 .msg.pulso .msg-text { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 300; line-height: 1.6; color: #1a1610; }
@@ -69,7 +69,7 @@ body { background: #f5f0e8; color: #1a1610; font-family: 'DM Sans', sans-serif; 
 
 <div id="screen-intro" class="screen">
   <div class="header">
-   <span class="logo">Pulso</span>
+    <span class="logo">Pulso</span>
     <button class="lang-switch" onclick="show('screen-lang')" id="btn-lang-intro">Idioma</button>
   </div>
   <div class="content">
@@ -81,7 +81,7 @@ body { background: #f5f0e8; color: #1a1610; font-family: 'DM Sans', sans-serif; 
 
 <div id="screen-chat" class="screen">
   <div class="header">
-   <span class="logo">Pulso</span>
+    <span class="logo">Pulso</span>
     <div style="display:flex;align-items:center;gap:1.5rem;">
       <span class="phase" id="phase-label"></span>
       <button class="lang-switch" onclick="show('screen-lang')" id="btn-lang-chat">Idioma</button>
@@ -110,8 +110,8 @@ body { background: #f5f0e8; color: #1a1610; font-family: 'DM Sans', sans-serif; 
 <script>
 const TEXTS = {
   es: {
-    title: 'Hay algo\nque te trajo aquí.',
-    subtitle: 'Escribe lo que surge. Sin filtros. Sin estructura.\nPULSO hace el resto.',
+    title: 'Hay algo que te trajo aquí.',
+    subtitle: 'Escribe lo que surge. Sin filtros. Sin estructura. PULSO hace el resto.',
     start: 'Comenzar',
     placeholder: 'Escribe aquí...',
     send: 'Enviar',
@@ -122,8 +122,8 @@ const TEXTS = {
     initMsg: 'inicio'
   },
   en: {
-    title: 'Something\nbrought you here.',
-    subtitle: 'Write what comes. No filters. No structure.\nPULSO does the rest.',
+    title: 'Something brought you here.',
+    subtitle: 'Write what comes. No filters. No structure. PULSO does the rest.',
     start: 'Begin',
     placeholder: 'Write here...',
     send: 'Send',
@@ -134,8 +134,8 @@ const TEXTS = {
     initMsg: 'start'
   },
   fr: {
-    title: 'Quelque chose\nvous a amené ici.',
-    subtitle: 'Écrivez ce qui vient. Sans filtres. Sans structure.\nPULSO fait le reste.',
+    title: 'Quelque chose vous a amené ici.',
+    subtitle: 'Écrivez ce qui vient. Sans filtres. Sans structure. PULSO fait le reste.',
     start: 'Commencer',
     placeholder: 'Écrivez ici...',
     send: 'Envoyer',
@@ -209,7 +209,7 @@ async function startSession() {
     const memData = await memRes.json();
     if (memData.memory) {
       const m = memData.memory;
-      memory = `Razón inicial: ${m.razon_inicial || ''}\nLo que el usuario expresó: ${(m.frases_clave || []).join(' | ')}\nLo que PULSO observó: ${(m.sin_resolver || []).join(' | ')}`;
+      memory = 'Razón inicial: ' + (m.razon_inicial || '') + '\nLo que el usuario expresó: ' + (m.frases_clave || []).join(' | ') + '\nLo que PULSO observó: ' + (m.sin_resolver || []).join(' | ');
     }
   } catch(e) {}
 
